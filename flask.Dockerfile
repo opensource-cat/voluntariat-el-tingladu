@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.9.19-slim-bullseye
+FROM python:3.11.11-slim-bullseye
 
 # set work directory
 WORKDIR /usr/src/flask
