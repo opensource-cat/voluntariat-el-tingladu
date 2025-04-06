@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
-from .helper import require_login, require_view, is_read_only, labels
+from .helper import require_login, require_view, is_read_only
 from . import db, task_manager, rewards_manager, hashid_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm, InformativeMeetingForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
@@ -16,6 +16,11 @@ import random
 volunteer_bp = Blueprint(
     "volunteer_bp", __name__, template_folder="templates", static_folder="static"
 )
+
+# Reunió informativa pels voluntaris de barra
+def get_information_meeting_options():
+    from flask import current_app
+    return current_app.config["INFORMATION_MEETING_OPTIONS"].split(',')
 
 @volunteer_bp.route('/p')
 @require_login()
@@ -140,7 +145,7 @@ def tasks(volunteer_hashid):
 def __get_informative_meeting_form(volunteer):
     if volunteer.informative_meeting != "":
         form = InformativeMeetingForm(obj = volunteer)
-        form.informative_meeting.choices = labels.get("information_meeting_types").split(',')
+        form.informative_meeting.choices = get_information_meeting_options()
         form.informative_meeting.default = volunteer.informative_meeting
         return form
     return None
@@ -333,11 +338,11 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
     tasques_barra = db.session.execute(text(f"""select count(*) from user_shifts as us 
             join shifts as s on us.shift_id = s.id
             join tasks as t on s.task_id = t.id
-            where us.user_id = {volunteer.id} and t.name = 'BARRES'""")).scalar()
+            where us.user_id = {volunteer.id} and (t.name = 'BARRES' or t.name = 'BARRES PRIMER TORN')""")).scalar()
     if tasques_barra > 0:
         if volunteer.informative_meeting == "":
             # li assignem una reunió informativa a l'atzar
-            options = labels.get("information_meeting_types").split(',')
+            options = get_information_meeting_options()
             options.pop() # el darrer element és "no puc anar" i no el triem
             # el guardo al perfil
             volunteer.informative_meeting = random.choice(options)

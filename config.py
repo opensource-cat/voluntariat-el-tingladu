@@ -36,6 +36,9 @@ class Config:
     # plugin rewards
     REWARDS_CLASS = environ.get("REWARDS_CLASS")
 
+    # Information meeting options separated by commas
+    INFORMATION_MEETING_OPTIONS = environ.get("INFORMATION_MEETING_OPTIONS")
+
     # Flask-SQLAlchemy
     SQLALCHEMY_DATABASE_URI = environ.get("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_ECHO = True

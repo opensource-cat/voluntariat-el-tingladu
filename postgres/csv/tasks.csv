@@ -1,20 +1,22 @@
-nom,descripció,contrasenya,no voluntaris
+nom,descripció,contrasenya,professionals
+ENTRADES,Voluntariat d'entrades,"",FALSE
 BARRES,Voluntariat de barres,"",FALSE
-SUBCAPS DE BARRES,Supcaps de barres,password0,FALSE
-ENTRADES,Voluntariat d'entrades,password1,FALSE
+MUNTATGE,Voluntariat de muntatge,"",FALSE
+BARRES PRIMER TORN,Voluntariat de barres de 1r torn,password0,FALSE
+SUBCAPS DE BARRES,Supcaps de barres,password1,FALSE
 MARXANDATGE,Voluntariat de marxandatge,password2,FALSE
 CUINA,Voluntariat de cuina,password3,FALSE
 GLOBUS,Voluntariat de Globus,password4,FALSE
 PHOTOCALL,Voluntariat del photocall,password5,FALSE
 TRESORERIA,Voluntariat de tresoreria,password6,FALSE
-MUNTATGE,Voluntariat de muntatge,"",FALSE
-SUPORT,Gent de suport del centre obert,"",TRUE
+SUPORT COL·LECTIUS,Tasques de suport de col·lectius,"",TRUE
 ORGANITZACIÓ,Voluntariat d'organització,password7,FALSE
 COMUNICACIÓ,Voluntariat de comunicació,password8,FALSE
 ELÈCTRICS,Voluntariat elèctrics,password9,FALSE
-SO,Persones professionals del So,"",TRUE
-SEGURETAT,Persones professionals de Seguretat,"",TRUE
-PUNT LILA I FOOD TRUCK,Persones professionals del Punt Lila i les Food Trucks,"",TRUE
+EMPLEATS SO,Persones professionals del So,"",TRUE
+EMPLEATS SEGURETAT,Persones professionals de Seguretat,"",TRUE
+EMPLEATS PUNT LILA I FOOD TRUCK,Persones professionals del Punt Lila i les Food Trucks,"",TRUE
+EMPLEATS TAQUILLES,Persones professionals de la taquilla d'entrades,"",TRUE
 INVITACIÓ ENTRADES,Tasca ficticia per a assignar entrades,"",TRUE
 INVITACIÓ SOPAR,Tasca ficticia per a assignar sopars,"",TRUE
 INVITACIÓ TICKETS,Tasca ficticia per a assignar tickets,"",TRUE

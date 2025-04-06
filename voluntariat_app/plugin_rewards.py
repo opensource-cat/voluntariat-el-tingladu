@@ -67,9 +67,10 @@ class Rewards17Edition(RewardsImpl):
             acreditacio_suport_id = self._get_ticket_id(db, "ENTRADA AVUI DE SUPORT")
             acreditacio_organitzacio_id = self._get_ticket_id(db, "ACREDITACIÓ ORGANITZACIÓ")
             acreditacio_treballador_id = self._get_ticket_id(db, "ACREDITACIÓ TREBALLADOR")
-            acreditacio_punt_lila_i_food_truck_id = self._get_ticket_id(db, "ACREDITACIÓ PUNT LILA I FOOD TRUCK")
+            acreditacio_empleats_punt_lila_i_food_truck_id = self._get_ticket_id(db, "ACREDITACIÓ PUNT LILA I FOOD TRUCK")
 
             # tasques
+            barres_primer_torn_id = self._get_task_id(db, "BARRES PRIMER TORN")
             barres_id = self._get_task_id(db, "BARRES")
             subcaps_barres_id = self._get_task_id(db, "SUBCAPS DE BARRES")
             entrades_id = self._get_task_id(db, "ENTRADES")
@@ -79,13 +80,14 @@ class Rewards17Edition(RewardsImpl):
             photocall_id = self._get_task_id(db, "PHOTOCALL")
             tresoreria_id = self._get_task_id(db, "TRESORERIA")
             muntatge_id = self._get_task_id(db, "MUNTATGE")
-            suport_id = self._get_task_id(db, "SUPORT")
+            suport_id = self._get_task_id(db, "SUPORT COL·LECTIUS")
             organitzacio_id = self._get_task_id(db, "ORGANITZACIÓ")
             comunicacio_id = self._get_task_id(db, "COMUNICACIÓ")
             electrics_id = self._get_task_id(db, "ELÈCTRICS")
-            so_id = self._get_task_id(db, "SO")
-            seguretat_id = self._get_task_id(db, "SEGURETAT")
-            punt_lila_i_food_truck_id = self._get_task_id(db, "PUNT LILA I FOOD TRUCK")
+            empleats_so_id = self._get_task_id(db, "EMPLEATS SO")
+            empleats_seguretat_id = self._get_task_id(db, "EMPLEATS SEGURETAT")
+            empleats_punt_lila_i_food_truck_id = self._get_task_id(db, "EMPLEATS PUNT LILA I FOOD TRUCK")
+            empleats_taquilles_id = self._get_task_id(db, "EMPLEATS TAQUILLES")
             invitacio_entrades_id = self._get_task_id(db, "INVITACIÓ ENTRADES")
             invitacio_sopar_id = self._get_task_id(db, "INVITACIÓ SOPAR")
             invitacio_tickets_id = self._get_task_id(db, "INVITACIÓ TICKETS")
@@ -97,6 +99,7 @@ class Rewards17Edition(RewardsImpl):
                     self.dissabte: sopar_dissabte_id,
                 }, frozenset([
                     barres_id,
+                    barres_primer_torn_id,
                     subcaps_barres_id,
                     entrades_id,
                     marxandatge_id,
@@ -109,9 +112,10 @@ class Rewards17Edition(RewardsImpl):
                     # organitzacio_id,
                     comunicacio_id,
                     # electrics_id,
-                    # so_id,
-                    # seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    # empleats_so_id,
+                    # empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    # empleats_taquilles_id
                     # invitacio_entrades_id,
                     invitacio_sopar_id,
                     # invitacio_tickets_id,
@@ -120,6 +124,7 @@ class Rewards17Edition(RewardsImpl):
                     sopar_dijous_id, sopar_divendres_id, sopar_dissabte_id
                 ],frozenset([
                     # barres_id,
+                    # barres_primer_torn_id
                     # subcaps_barres_id,
                     # entrades_id,
                     # marxandatge_id,
@@ -132,9 +137,10 @@ class Rewards17Edition(RewardsImpl):
                     organitzacio_id,
                     # comunicacio_id,
                     # electrics_id,
-                    so_id,
-                    seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    empleats_so_id,
+                    empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    empleats_taquilles_id,
                     # invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,
@@ -148,6 +154,7 @@ class Rewards17Edition(RewardsImpl):
                     self.dissabte: entrada_dissabte_id,
                 }, frozenset([
                     barres_id,
+                    barres_primer_torn_id,
                     subcaps_barres_id,
                     entrades_id,
                     marxandatge_id,
@@ -160,9 +167,10 @@ class Rewards17Edition(RewardsImpl):
                     # organitzacio_id,
                     comunicacio_id,
                     # electrics_id,
-                    # so_id,
-                    # seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    # empleats_so_id,
+                    # empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    # empleats_taquilles_id,
                     invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,
@@ -173,6 +181,7 @@ class Rewards17Edition(RewardsImpl):
                     self.dissabte: voluntari_dissabte_id,
                 }, frozenset([
                     barres_id,
+                    barres_primer_torn_id,
                     subcaps_barres_id,
                     entrades_id,
                     marxandatge_id,
@@ -185,9 +194,10 @@ class Rewards17Edition(RewardsImpl):
                     # organitzacio_id,
                     # comunicacio_id,
                     # electrics_id,
-                    # so_id,
-                    # seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    # empleats_so_id,
+                    # empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    # empleats_taquilles_id,
                     # invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,
@@ -198,6 +208,7 @@ class Rewards17Edition(RewardsImpl):
                     self.dissabte: col_dissabte_id,
                 }, frozenset([
                     # barres_id,
+                    # barres_primer_torn_id,
                     # subcaps_barres_id,
                     # entrades_id,
                     # marxandatge_id,
@@ -210,9 +221,10 @@ class Rewards17Edition(RewardsImpl):
                     # organitzacio_id,
                     comunicacio_id,
                     # electrics_id,
-                    # so_id,
-                    # seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    # empleats_so_id,
+                    # empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    # empleats_taquilles_id,
                     # invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,
@@ -223,6 +235,7 @@ class Rewards17Edition(RewardsImpl):
                     self.dissabte: globus_dissabte_id,
                 }, frozenset([
                     # barres_id,
+                    # barres_primer_torn_id,
                     # subcaps_barres_id,
                     # entrades_id,
                     # marxandatge_id,
@@ -235,9 +248,10 @@ class Rewards17Edition(RewardsImpl):
                     # organitzacio_id,
                     # comunicacio_id,
                     # electrics_id,
-                    # so_id,
-                    # seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    # empleats_so_id,
+                    # empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    # empleats_taquilles_id,
                     # invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,
@@ -246,6 +260,7 @@ class Rewards17Edition(RewardsImpl):
                     acreditacio_suport_id
                 ], frozenset([
                     # barres_id,
+                    # barres_primer_torn_id,
                     # subcaps_barres_id,
                     # entrades_id,
                     # marxandatge_id,
@@ -258,9 +273,10 @@ class Rewards17Edition(RewardsImpl):
                     # organitzacio_id,
                     # comunicacio_id,
                     # electrics_id,
-                    # so_id,
-                    # seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    # empleats_so_id,
+                    # empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    # empleats_taquilles_id,
                     # invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,
@@ -269,6 +285,7 @@ class Rewards17Edition(RewardsImpl):
                     acreditacio_organitzacio_id
                 ], frozenset([
                     # barres_id,
+                    # barres_primer_torn_id,
                     # subcaps_barres_id,
                     # entrades_id,
                     # marxandatge_id,
@@ -281,9 +298,10 @@ class Rewards17Edition(RewardsImpl):
                     organitzacio_id,
                     # comunicacio_id,
                     # electrics_id,
-                    # so_id,
-                    # seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    # empleats_so_id,
+                    # empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    # empleats_taquilles_id,
                     # invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,
@@ -293,6 +311,7 @@ class Rewards17Edition(RewardsImpl):
                     acreditacio_treballador_id
                 ], frozenset([
                     # barres_id,
+                    # barres_primer_torn_id,
                     # subcaps_barres_id,
                     # entrades_id,
                     # marxandatge_id,
@@ -305,17 +324,19 @@ class Rewards17Edition(RewardsImpl):
                     # organitzacio_id,
                     # comunicacio_id,
                     # electrics_id,
-                    so_id,
-                    seguretat_id,
-                    # punt_lila_i_food_truck_id,
+                    empleats_so_id,
+                    empleats_seguretat_id,
+                    # empleats_punt_lila_i_food_truck_id,
+                    empleats_taquilles_id,
                     # invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,
                 ])],
                 [[  # punt lila I food truck
-                    acreditacio_punt_lila_i_food_truck_id
+                    acreditacio_empleats_punt_lila_i_food_truck_id
                 ], frozenset([
                     # barres_id,
+                    # barres_primer_torn_id,
                     # subcaps_barres_id,
                     # entrades_id,
                     # marxandatge_id,
@@ -328,9 +349,10 @@ class Rewards17Edition(RewardsImpl):
                     # organitzacio_id,
                     # comunicacio_id,
                     # electrics_id,
-                    # so_id,
-                    # seguretat_id,
-                    punt_lila_i_food_truck_id,
+                    # empleats_so_id,
+                    # empleats_seguretat_id,
+                    empleats_punt_lila_i_food_truck_id,
+                    # empleats_taquilles_id,
                     # invitacio_entrades_id,
                     # invitacio_sopar_id,
                     # invitacio_tickets_id,

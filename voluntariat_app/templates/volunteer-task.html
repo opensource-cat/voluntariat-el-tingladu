@@ -42,7 +42,7 @@
     {% endif %}
     <div class="list-group">
       <div class="list-group-item list-group-item-dark">
-        <h4>{{task.name}}</h4>
+        <h4>{{task.name}} {% if task.password != '' %} <span class="badge badge-warning">Accés restringit</span>{% endif %}</h4>
         <h4><small>{{ task.description }}</small></h4>
       </div>
       {% for day, n in days_and_number_of_shifts %}
