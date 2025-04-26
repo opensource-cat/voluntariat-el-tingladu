@@ -231,7 +231,7 @@ def on_identity_loaded(sender, identity):
                     identity.provides.add(__edit_action_need)
                 identity.provides.add(__view_action_need)
             else:
-                logger.warn(f"Volunteers are not allowed: {current_user.email}")
+                logger.warning(f"Volunteers are not allowed: {current_user.email}")
 
 def notify_identity_changed():
     from flask import current_app
