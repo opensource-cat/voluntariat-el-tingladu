@@ -47,7 +47,8 @@ def people():
             phone as mòbil, role as rol, 
             case when shifts.n > 0 then 'X' else '' end as "amb torns",
             case when electrician then 'X' else '' end as electricitat,
-            informative_meeting as "reunió informativa",
+            barres_informative_meeting as "reunió inf. barres",
+            entrades_informative_meeting as "reunió inf. entrades",
             purchased_ticket1 as "entrada adquirida 1",
             purchased_ticket2 as "entrada adquirida 2",
             purchased_ticket3 as "entrada adquirida 3"

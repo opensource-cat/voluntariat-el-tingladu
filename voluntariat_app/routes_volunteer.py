@@ -18,9 +18,13 @@ volunteer_bp = Blueprint(
 )
 
 # Reunió informativa pels voluntaris de barra
-def get_information_meeting_options():
+def get_barres_information_meeting_options():
     from flask import current_app
-    return current_app.config["INFORMATION_MEETING_OPTIONS"].split(',')
+    return current_app.config["BARRES_INFORMATION_MEETING_OPTIONS"].split(',')
+
+def get_entrades_information_meeting_options():
+    from flask import current_app
+    return current_app.config["ENTRADES_INFORMATION_MEETING_OPTIONS"].split(',')
 
 @volunteer_bp.route('/p')
 @require_login()
@@ -138,21 +142,35 @@ def tasks(volunteer_hashid):
             tasks_and_number_of_shifts = [(t,n) for (t,n) in tasks_and_number_of_shifts if t.name != 'MUNTATGE']
 
     # si té tasques de barra, ha d'anar a la reunió informativa
-    informative_meeting_form = __get_informative_meeting_form(volunteer)
+    barres_informative_meeting_form = __get_barres_informative_meeting_form(volunteer)
+    entrades_informative_meeting_form = __get_entrades_informative_meeting_form(volunteer)
 
-    return render_template('volunteer-tasks.html',informative_meeting_form=informative_meeting_form,tasks_and_number_of_shifts=tasks_and_number_of_shifts,volunteer=volunteer,user=current_user)
+    return render_template('volunteer-tasks.html',
+                           barres_informative_meeting_form=barres_informative_meeting_form,
+                           entrades_informative_meeting_form=entrades_informative_meeting_form,
+                           tasks_and_number_of_shifts=tasks_and_number_of_shifts,
+                           volunteer=volunteer,user=current_user
+                           )
 
-def __get_informative_meeting_form(volunteer):
-    if volunteer.informative_meeting != "":
+def __get_barres_informative_meeting_form(volunteer):
+    if volunteer.barres_informative_meeting != "":
         form = InformativeMeetingForm(obj = volunteer)
-        form.informative_meeting.choices = get_information_meeting_options()
-        form.informative_meeting.default = volunteer.informative_meeting
+        form.informative_meeting.choices = get_barres_information_meeting_options()
+        form.informative_meeting.data = volunteer.barres_informative_meeting
         return form
     return None
 
-@volunteer_bp.route('/p/<volunteer_hashid>/change-informative-meeting', methods=["POST"])
+def __get_entrades_informative_meeting_form(volunteer):
+    if volunteer.entrades_informative_meeting != "":
+        form = InformativeMeetingForm(obj = volunteer)
+        form.informative_meeting.choices = get_entrades_information_meeting_options()
+        form.informative_meeting.data = volunteer.entrades_informative_meeting
+        return form
+    return None
+
+@volunteer_bp.route('/p/<volunteer_hashid>/change-barres-informative-meeting', methods=["POST"])
 @require_view()
-def change_informative_meeting(volunteer_hashid):
+def change_barres_informative_meeting(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("wrong_address")
@@ -161,7 +179,25 @@ def change_informative_meeting(volunteer_hashid):
     if is_read_only():
         flash_info("read_only")
     else:
-        volunteer.informative_meeting = request.form.get("informative_meeting")
+        volunteer.barres_informative_meeting = request.form.get("informative_meeting")
+        db.session.add(volunteer)
+        db.session.commit()
+        flash_info("data_saved")
+
+    return redirect(request.referrer or url_for('volunteer_bp.tasks',volunteer_hashid=volunteer_hashid))
+
+@volunteer_bp.route('/p/<volunteer_hashid>/change-entrades-informative-meeting', methods=["POST"])
+@require_view()
+def change_entrades_informative_meeting(volunteer_hashid):
+    volunteer = load_volunteer(current_user,volunteer_hashid)
+    if volunteer is None:
+        flash_error("wrong_address")
+        return redirect(url_for('main_bp.init'))
+
+    if is_read_only():
+        flash_info("read_only")
+    else:
+        volunteer.entrades_informative_meeting = request.form.get("informative_meeting")
         db.session.add(volunteer)
         db.session.commit()
         flash_info("data_saved")
@@ -196,9 +232,16 @@ def task(volunteer_hashid, task_hashid):
         return redirect(request.path + "/shifts?day=" + pathname2url(days_and_number_of_shifts[0][0]))
     
     # si té tasques de barra, ha d'anar a la reunió informativa
-    informative_meeting_form = __get_informative_meeting_form(volunteer)
+    barres_informative_meeting_form = __get_barres_informative_meeting_form(volunteer)
+    entrades_informative_meeting_form = __get_entrades_informative_meeting_form(volunteer)
 
-    return render_template('volunteer-task.html',informative_meeting_form=informative_meeting_form, task=task, days_and_number_of_shifts=days_and_number_of_shifts,volunteer=volunteer,user=current_user)
+    return render_template('volunteer-task.html',
+                           barres_informative_meeting_form=barres_informative_meeting_form,
+                           entrades_informative_meeting_form=entrades_informative_meeting_form,
+                           task=task,
+                           days_and_number_of_shifts=days_and_number_of_shifts,
+                           volunteer=volunteer,user=current_user
+                           )
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>/shifts', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>/shifts', methods=["GET", "POST"])
@@ -258,10 +301,12 @@ def shifts(volunteer_hashid, task_hashid):
             flash_info("read_only")
         
         # si té tasques de barra, ha d'anar a la reunió informativa
-        informative_meeting_form = __get_informative_meeting_form(volunteer)
+        barres_informative_meeting_form = __get_barres_informative_meeting_form(volunteer)
+        entrades_informative_meeting_form = __get_entrades_informative_meeting_form(volunteer)
 
         return render_template('volunteer-shifts.html',
-            informative_meeting_form=informative_meeting_form,
+            barres_informative_meeting_form=barres_informative_meeting_form,
+            entrades_informative_meeting_form=entrades_informative_meeting_form,
             form=form,
             read_only=read_only,
             day = day,
@@ -340,16 +385,33 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
             join tasks as t on s.task_id = t.id
             where us.user_id = {volunteer.id} and (t.name = 'BARRES' or t.name = 'BARRES PRIMER TORN')""")).scalar()
     if tasques_barra > 0:
-        if volunteer.informative_meeting == "":
+        if volunteer.barres_informative_meeting == "":
             # li assignem una reunió informativa a l'atzar
-            options = get_information_meeting_options()
+            options = get_barres_information_meeting_options()
             options.pop() # el darrer element és "no puc anar" i no el triem
             # el guardo al perfil
-            volunteer.informative_meeting = random.choice(options)
+            volunteer.barres_informative_meeting = random.choice(options)
             flash_info("informative_meeting_assigned")
     else:
         # no té tasques de barra, per tant no cal que vagi a la reunió informativa
-        volunteer.informative_meeting = ""
+        volunteer.barres_informative_meeting = ""
+
+    # FIXME: Si fa tasques d'entrades, ha d'anar a la reunió informativa
+    tasques_entrades = db.session.execute(text(f"""select count(*) from user_shifts as us 
+            join shifts as s on us.shift_id = s.id
+            join tasks as t on s.task_id = t.id
+            where us.user_id = {volunteer.id} and t.name = 'ENTRADES'""")).scalar()
+    if tasques_entrades > 0:
+        if volunteer.entrades_informative_meeting == "":
+            # li assignem una reunió informativa a l'atzar
+            options = get_entrades_information_meeting_options()
+            options.pop() # el darrer element és "no puc anar" i no el triem
+            # el guardo al perfil
+            volunteer.entrades_informative_meeting = random.choice(options)
+            flash_info("informative_meeting_assigned")
+    else:
+        # no té tasques de barra, per tant no cal que vagi a la reunió informativa
+        volunteer.entrades_informative_meeting = ""
 
     # actualitzo tickets, àpats i acreditacions
     rewards_manager.update_rewards(

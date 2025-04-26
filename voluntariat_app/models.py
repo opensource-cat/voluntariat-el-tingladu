@@ -35,7 +35,8 @@ class User(UserMixin, db.Model):
     purchased_ticket2 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     purchased_ticket3 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     electrician = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
-    informative_meeting = db.Column(db.String, nullable=False, server_default='')
+    barres_informative_meeting = db.Column(db.String, nullable=False, server_default='')
+    entrades_informative_meeting = db.Column(db.String, nullable=False, server_default='')
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=True, server_default=text("TRUE"))
     change_password_token = db.Column(db.String)

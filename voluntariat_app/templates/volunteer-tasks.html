@@ -21,17 +21,35 @@
       {{ volunteer.full_name }}
       {% endif %}
     </small></h2>
-    {% if informative_meeting_form %}
+    {% if entrades_informative_meeting_form %}
+      <div class="list-group">
+        <span class="list-group-item list-group-item-info">
+          <h4>REUNIÓ INFORMATIVA ENTRADES</h4> 
+          <p>És molt important la teva assistència</p>
+          <form class="form-inline" role="form" method='POST' action="/p/{{ volunteer.hashid }}/change-entrades-informative-meeting">
+            {{ entrades_informative_meeting_form.csrf_token }}
+            <div class="input-group input-group-sm">
+              {{ entrades_informative_meeting_form.informative_meeting(class='form-control') }}
+              <div class="input-group-append">
+                {{ entrades_informative_meeting_form.submit(value="Canvia", class='btn btn-success') }}
+              </div>
+            </div>
+          </form>
+        </span>
+      </div>
+      <br />
+    {% endif %}
+    {% if barres_informative_meeting_form %}
       <div class="list-group">
         <span class="list-group-item list-group-item-info">
           <h4>REUNIÓ INFORMATIVA BARRES</h4> 
-          <p>Enguany hi ha un nou format d'acreditació i és molt important la teva assistència</p>
-          <form class="form-inline" role="form" method='POST' action="/p/{{ volunteer.hashid }}/change-informative-meeting">
-            {{ informative_meeting_form.csrf_token }}
+          <p>És molt important la teva assistència</p>
+          <form class="form-inline" role="form" method='POST' action="/p/{{ volunteer.hashid }}/change-barres-informative-meeting">
+            {{ barres_informative_meeting_form.csrf_token }}
             <div class="input-group input-group-sm">
-              {{ informative_meeting_form.informative_meeting(class='form-control') }}
+              {{ barres_informative_meeting_form.informative_meeting(class='form-control') }}
               <div class="input-group-append">
-                {{ informative_meeting_form.submit(value="Canvia", class='btn btn-success') }}
+                {{ barres_informative_meeting_form.submit(value="Canvia", class='btn btn-success') }}
               </div>
             </div>
           </form>

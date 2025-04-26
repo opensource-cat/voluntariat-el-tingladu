@@ -91,12 +91,16 @@ def get_shifts(user_id):
     from . import db
     from sqlalchemy import text
 
-    # reunió informativa també com a torn
-    label_informative_meeting = labels.get("informative_meeting")
+    # reunions informatives també com a torns
+    label_barres_informative_meeting = labels.get("barres_informative_meeting")
+    label_entrades_informative_meeting = labels.get("entrades_informative_meeting")
 
     shifts = [s for s in db.session.execute(text(f"""
-        select -1, '{label_informative_meeting}: ' || informative_meeting from users 
-        where id = {user_id} and informative_meeting!=''                                         
+        select -2, '{label_barres_informative_meeting}: ' || barres_informative_meeting from users 
+        where id = {user_id} and barres_informative_meeting!=''         
+        union
+        select -1, '{label_entrades_informative_meeting}: ' || entrades_informative_meeting from users 
+        where id = {user_id} and entrades_informative_meeting!=''                                  
         union                                                    
         select s.id, t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
         from tasks as t 

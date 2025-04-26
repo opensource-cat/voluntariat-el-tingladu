@@ -296,7 +296,9 @@ CREATE TABLE public.users (
     purchased_ticket3 character varying DEFAULT ''::character varying NOT NULL,
     electrician boolean DEFAULT false NOT NULL,
     confirmed boolean DEFAULT true NOT NULL,
-    informative_meeting character varying DEFAULT ''::character varying NOT NULL,
+    -- TODO: set these fields in a meetings table
+    barres_informative_meeting character varying DEFAULT ''::character varying NOT NULL,
+    entrades_informative_meeting character varying DEFAULT ''::character varying NOT NULL,
     role public.users_role NOT NULL,
     change_password_token character varying,
     last_shift_change_at timestamp with time zone
