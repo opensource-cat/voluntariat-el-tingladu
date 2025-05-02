@@ -136,14 +136,32 @@ def tasks(volunteer_hashid):
             Task.id.asc()
         )
 
-        # a mes, si no s'ha apuntat a cap tasca, no pot fer muntatge
-        # FIXME!!!!
+        #FIXME a mes, si no s'ha apuntat a cap tasca, no pot fer muntatge
         if not volunteer.has_shifts:
             tasks_and_number_of_shifts = [(t,n) for (t,n) in tasks_and_number_of_shifts if t.name != 'MUNTATGE']
+
+        #FIXME si no té tasques assignades, no pot fer res
+        doing_entrades = False
+        doing_barres = False
+        for (t,n) in tasks_and_number_of_shifts:
+            if n > 0 and t.name == 'ENTRADES':
+                doing_entrades = True
+            elif n > 0 and t.name == 'BARRES':
+                doing_barres = True
+
+        if doing_entrades:
+            #FIXME si fa entrades, no pot fer barres
+            tasks_and_number_of_shifts = [(t,n) for (t,n) in tasks_and_number_of_shifts if t.name != 'BARRES']
+
+        if doing_barres:
+            #FIXME si fa barres, no pot fer entrades
+            tasks_and_number_of_shifts = [(t,n) for (t,n) in tasks_and_number_of_shifts if t.name != 'ENTRADES']
 
     # si té tasques de barra, ha d'anar a la reunió informativa
     barres_informative_meeting_form = __get_barres_informative_meeting_form(volunteer)
     entrades_informative_meeting_form = __get_entrades_informative_meeting_form(volunteer)
+
+    flash_warning("tickets_or_bar")
 
     return render_template('volunteer-tasks.html',
                            barres_informative_meeting_form=barres_informative_meeting_form,
@@ -370,14 +388,38 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
 
     # si sols té tasques de muntatge i no és admin, tot fora
     if not current_user_is_admin:
-        # FIXME: Dependencia xunga amb la tasca de MUNTATGE
-        no_muntatge = db.session.execute(text(f"""select count(*) from user_shifts as us 
+        #FIXME: Dependencia xunga amb la tasca de MUNTATGE
+        num_no_muntatge = db.session.execute(text(f"""select count(*) from user_shifts as us 
             join shifts as s on us.shift_id = s.id
             join tasks as t on s.task_id = t.id
             where us.user_id = {volunteer.id} and t.name != 'MUNTATGE'""")).scalar()
-        if no_muntatge == 0:
+        if num_no_muntatge == 0:
             # esborro les possibles tasques de muntatge que té
             db.session.execute(text(f"""delete from user_shifts where user_id = {volunteer.id}"""))
+
+        #FIXME: Si ha triat entrades, no pot fer barres
+        num_entrades = db.session.execute(text(f"""select count(*) from user_shifts as us
+            join shifts as s on us.shift_id = s.id
+            join tasks as t on s.task_id = t.id
+            where us.user_id = {volunteer.id} and t.name = 'ENTRADES'""")).scalar()
+        if num_entrades > 0:
+            # esborro les possibles tasques de barres que té
+            db.session.execute(text(f"""delete from user_shifts as us
+                using shifts as s
+                where us.shift_id = s.id and s.task_id = (select id from tasks where name = 'BARRES') 
+                and us.user_id = {volunteer.id}"""))
+            
+        #FIXME: Si ha triat barres, no pot fer entrades
+        num_barres = db.session.execute(text(f"""select count(*) from user_shifts as us 
+            join shifts as s on us.shift_id = s.id
+            join tasks as t on s.task_id = t.id
+            where us.user_id = {volunteer.id} and t.name = 'BARRES'""")).scalar()
+        if num_barres > 0:
+            # esborro les possibles tasques d'entrades que té
+            db.session.execute(text(f"""delete from user_shifts as us
+                using shifts as s
+                where us.shift_id = s.id and s.task_id = (select id from tasks where name = 'ENTRADES') 
+                and us.user_id = {volunteer.id}"""))
 
     # FIXME: Si fa tasques de barra, ha d'anar a la reunió informativa
     tasques_barra = db.session.execute(text(f"""select count(*) from user_shifts as us 
