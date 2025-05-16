@@ -64,9 +64,9 @@ MUNTATGE,"",Dimarts 22/07 de 17:00 a 20:00,7,10,{ASSISTÈNCIA CONFIRMADA},FALSE
 MUNTATGE,"",Dimecres 22/07 de 10:00 a 13:00,7,10,{ASSISTÈNCIA CONFIRMADA},FALSE
 MUNTATGE,"",Dimecres 23/07 de 17:00 a 20:00,7,10,{ASSISTÈNCIA CONFIRMADA},FALSE
 MUNTATGE,"",Dijous 24/07 de 10:00 a 13:00,7,10,{ASSISTÈNCIA CONFIRMADA},FALSE
-SUPORT COL·LECTIUS,24-07 DIJOUS,Tasques de suport de col·lectius,20,15,{},TRUE
-SUPORT COL·LECTIUS,25-07 DIVENDRES,Tasques de suport de col·lectius,20,15,{},TRUE
-SUPORT COL·LECTIUS,26-07 DISSABTE,Tasques de suport de col·lectius,20,15,{},TRUE
+SUPORT COL·LECTIUS,24-07 DIJOUS,Tasques de suport de col·lectius,20,8,{},TRUE
+SUPORT COL·LECTIUS,25-07 DIVENDRES,Tasques de suport de col·lectius,20,8,{},TRUE
+SUPORT COL·LECTIUS,26-07 DISSABTE,Tasques de suport de col·lectius,20,8,{},TRUE
 ORGANITZACIÓ,"",Tasques d'organització,30,0,{},TRUE
 COMUNICACIÓ,24-07 DIJOUS,Tasques de comunicació en dijous,5,0,{},TRUE
 COMUNICACIÓ,25-07 DIVENDRES,Tasques de comunicació en divendres,5,0,{},TRUE
