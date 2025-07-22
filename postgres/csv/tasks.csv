@@ -9,10 +9,10 @@ CUINA,Voluntariat de cuina,password3,FALSE
 GLOBUS,Voluntariat de Globus,password4,FALSE
 PHOTOCALL,Voluntariat del photocall,password5,FALSE
 TRESORERIA,Voluntariat de tresoreria,password6,FALSE
-SUPORT COL·LECTIUS,Tasques de suport de col·lectius,"",TRUE
-ORGANITZACIÓ,Voluntariat d'organització,password7,FALSE
-COMUNICACIÓ,Voluntariat de comunicació,password8,FALSE
-ELÈCTRICS,Voluntariat elèctrics,password9,FALSE
+SUPORT COL·LECTIUS,Tasques de suport de col·lectius,"password7",FALSE
+ORGANITZACIÓ,Voluntariat d'organització,password8,FALSE
+COMUNICACIÓ,Voluntariat de comunicació,password9,FALSE
+ELÈCTRICS,Voluntariat elèctrics,password10,FALSE
 EMPLEATS SO,Persones professionals del so,"",TRUE
 EMPLEATS SEGURETAT,Persones professionals de seguretat,"",TRUE
 EMPLEATS PUNT LILA I FOOD TRUCK,Persones professionals del Punt Lila i les food trucks,"",TRUE

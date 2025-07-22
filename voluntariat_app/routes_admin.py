@@ -523,9 +523,10 @@ def tickets():
             order by t.day asc, t.id asc, cognoms asc, nom asc, u.email asc
         """
 
+        day_text = day if day else "TOTS"
         file_name = hashid_manager.create_unique_file_name(
             user_id = current_user.id,
-            name = "ENTRADES-" + day,
+            name = "ENTRADES-" + day_text,
             extension = ".xlsx"
         )
         return generate_excel(
@@ -627,9 +628,10 @@ def rewards():
             order by dia asc, cognoms asc, nom asc, u.email asc
         """
 
+        day_text = day if day else "TOTS"
         file_name = hashid_manager.create_unique_file_name(
             user_id = current_user.id,
-            name = "CONSUM-" + day,
+            name = "CONSUM-" + day_text,
             extension = ".xlsx"
         )
         return generate_excel(
@@ -657,6 +659,48 @@ def rewards():
     users_with_cash = query_users_with_cash.order_by(cash_subquery.c.day.asc(), User.surname.asc(), User.name.asc()).all()
 
     return render_template('admin-cash.html',day=day,users_with_cash=users_with_cash,user=current_user)
+
+@admin_bp.route('/admin/excel_rewards_by_task_and_day/<task_id>')
+@require_admin()
+def excel_rewards_by_task_and_day(task_id):
+    day = request.args.get("day")
+    if day is None:
+        day = ""
+
+    day_filter = ""
+    if day != "":
+        # filtrem per dia
+        day_filter = f" and r.day='{day}'"
+
+    select = f"""select r.day as dia,
+        u.surname as cognoms, u.name as nom, 
+        case when u.role='worker' then '' else u.email end as email, 
+        u.phone as mòbil,
+        r.cash as "tickets consum"
+        from users as u 
+        join user_shifts as us on u.id = us.user_id
+        join shifts as s on s.id = us.shift_id
+        join (
+            select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
+            from user_rewards
+        ) as r 
+        on r.user_id = u.id
+        where s.task_id = :TASK_ID and r.cash > 0
+        {day_filter}
+        order by dia asc, cognoms asc, nom asc, u.email asc
+    """
+
+    day_text = day if day else "TOTS"
+    file_name = hashid_manager.create_unique_file_name(
+        user_id = current_user.id,
+        name = "CONSUM-" + day_text + "-TASK-" + str(task_id),
+        extension = ".xlsx"
+    )
+    return generate_excel(
+        file_name=file_name,
+        select=select,
+        params={"TASK_ID": task_id}
+    )
 
 @admin_bp.route('/admin/update-all-rewards')
 @require_superadmin()
@@ -718,17 +762,18 @@ def excel_tickets_and_rewards():
         ) as tr on tr.user_id = u.id
         left join (
             select ush.user_id, sh.day, array_to_string(array_agg(sh.description order by sh.id),' + ') as description from shifts as sh join user_shifts as ush on sh.id = ush.shift_id
-            where sh.task_id = 1
+            where sh.task_id = 2
             group by ush.user_id, sh.day
         ) as b on b.user_id = u.id and b.day = tr.day
         {day_filter}
         order by cognoms asc, nom asc, u.email asc, tr.day asc;
     """
-    # FIXME! sh.task_id = 1 és la tasca de barres!!!
+    # FIXME! sh.task_id = 2 és la tasca de barres!!!
 
+    day_text = day if day else "TOTS"
     file_name = hashid_manager.create_unique_file_name(
         user_id = current_user.id,
-        name = "TICKETS_I_CONSUM-" + day,
+        name = "TICKETS_I_CONSUM-" + day_text,
         extension = ".xlsx"
     )
     return generate_excel(
