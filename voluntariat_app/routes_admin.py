@@ -678,14 +678,16 @@ def excel_rewards_by_task_and_day(task_id):
         u.phone as mòbil,
         r.cash as "tickets consum"
         from users as u 
-        join user_shifts as us on u.id = us.user_id
-        join shifts as s on s.id = us.shift_id
         join (
             select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
             from user_rewards
         ) as r 
         on r.user_id = u.id
-        where s.task_id = :TASK_ID and r.cash > 0
+        where r.cash > 0 and u.id in (
+            select us.user_id from user_shifts as us
+            join shifts as s on s.id = us.shift_id
+            where s.task_id = :TASK_ID
+        )
         {day_filter}
         order by dia asc, cognoms asc, nom asc, u.email asc
     """
