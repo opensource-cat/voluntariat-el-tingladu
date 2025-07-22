@@ -51,7 +51,7 @@
                 <a class="btn btn-secondary" href="/admin/tasks"> &#x3c;&#x3c; Torna enrere</a>
                 {{ form.submit(value="Guarda el canvi de llocs totals", class='btn btn-success') }}
                 <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
-                <a class="btn btn-dark bg-ticket" href="/admin/excel_rewards_by_task_and_day/{{task.id}}">Tiquest de consum</a>
+                <a class="btn btn-dark bg-ticket" href="/admin/excel_rewards_by_task_and_day/{{task.id}}">Excel amb tiquest de consum</a>
                 {% if user.is_superadmin %}
                 <a class="btn btn-danger" href="/admin/tasks/{{task.id}}/email">Envia emails de confirmació</a>
                 {% endif %}
