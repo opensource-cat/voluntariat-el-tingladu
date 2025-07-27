@@ -41,11 +41,9 @@ def people():
             extension = ".xlsx"
         )
         select = """
-            select surname as cognoms, name as nom, 
-            case when role='worker' then '' else email end as email, 
-            case when role='worker' then '' else dni end as dni, 
+            select surname as cognoms, name as nom,
+            email as email, dni as dni,
             phone as mòbil, role as rol, 
-            case when shifts.n > 0 then 'X' else '' end as "amb torns",
             case when electrician then 'X' else '' end as electricitat,
             barres_informative_meeting as "reunió inf. barres",
             entrades_informative_meeting as "reunió inf. entrades",
@@ -55,7 +53,7 @@ def people():
             from users 
             left join (select user_id, count(*) as n from user_shifts group by user_id) as shifts
             on shifts.user_id = users.id
-            where users.confirmed
+            where users.confirmed and shifts.n > 0 and users.role != 'worker'
             order by cognoms asc, nom asc, users.email asc
         """
         return generate_excel(file_name = file_name, select = select)
