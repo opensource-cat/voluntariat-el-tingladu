@@ -36,14 +36,14 @@ class RewardsImpl:
         logger.info(f"{self.__class__.__name__} - shift:{name} = {id}")
         return id
 
-class Rewards17Edition(RewardsImpl):
+class Rewards18Edition(RewardsImpl):
 
     def __init__(self, app, db):
         with app.app_context():
             # dies
-            self.dijous = "24-07 DIJOUS"
-            self.divendres = "25-07 DIVENDRES"
-            self.dissabte = "26-07 DISSABTE"
+            self.dijous = "23-07 DIJOUS"
+            self.divendres = "24-07 DIVENDRES"
+            self.dissabte = "25-07 DISSABTE"
 
             # àpats
             sopar_dijous_id = self._get_meal_id(db, "SOPAR DE DIJOUS")

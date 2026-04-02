@@ -1,1 +1,1 @@
-\copy meals(name, day, description) from '/docker-entrypoint-initdb.d/csv/meals.csv' delimiter ',' csv header;
+\copy meals(name, day, description) from './csv/meals.csv' delimiter ',' csv header;

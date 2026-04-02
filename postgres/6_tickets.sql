@@ -1,1 +1,1 @@
-\copy tickets(name, day, description) from '/docker-entrypoint-initdb.d/csv/tickets.csv' delimiter ',' csv header;
+\copy tickets(name, day, description) from './csv/tickets.csv' delimiter ',' csv header;

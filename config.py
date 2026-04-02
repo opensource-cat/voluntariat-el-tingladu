@@ -30,6 +30,7 @@ class Config:
     # plugin_params
     PARAM_EXTERNAL_URL = environ.get("PARAM_EXTERNAL_URL")
     PARAM_INVITATION_TOKEN = environ.get("PARAM_INVITATION_TOKEN")
+    PARAM_ENABLE_APP = environ.get("PARAM_ENABLE_APP").lower() == "true"
     PARAM_ALLOW_MODIFICATIONS = environ.get("PARAM_ALLOW_MODIFICATIONS").lower() == "true"
     PARAM_ALLOW_VOLUNTEERS = environ.get("PARAM_ALLOW_VOLUNTEERS").lower() == "true"
 

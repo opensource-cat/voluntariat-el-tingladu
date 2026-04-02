@@ -11,7 +11,7 @@ CREATE TEMP TABLE tmp_shifts (
 );
 
 -- carrego la taula temporal
-\copy tmp_shifts(task_name, day, description, slots, reward, assignations, direct_reward) from '/docker-entrypoint-initdb.d/csv/shifts.csv' delimiter ',' csv header;
+\copy tmp_shifts(task_name, day, description, slots, reward, assignations, direct_reward) from './csv/shifts.csv' delimiter ',' csv header;
 
 -- trobo el task_id de cada tasca
 update tmp_shifts set task_id = tasks.id from tasks where tasks.name = tmp_shifts.task_name;

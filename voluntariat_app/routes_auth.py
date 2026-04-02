@@ -17,6 +17,9 @@ auth_bp = Blueprint(
 @auth_bp.route("/sign-up", defaults={'invitation_token': None}, methods=["GET", "POST"])
 @auth_bp.route("/sign-up/<invitation_token>", methods=["GET", "POST"])
 def signup(invitation_token):
+    if not params_manager.enable_app:
+        return redirect(url_for('main_bp.closed'))
+
     # Bypass if user is logged in
     if current_user.is_authenticated:
         return redirect(url_for("main_bp.init"))
@@ -95,6 +98,9 @@ def signup(invitation_token):
 
 @auth_bp.route("/forgotten-password", methods=["GET", "POST"])
 def forgotten_password():
+    if not params_manager.enable_app:
+        return redirect(url_for('main_bp.closed'))
+
     # Bypass if user is logged in
     if current_user.is_authenticated:
         return redirect(url_for("main_bp.init"))
@@ -125,6 +131,9 @@ def forgotten_password():
 
 @auth_bp.route("/register/<token>", methods=["GET", "POST"])
 def register(token):
+    if not params_manager.enable_app:
+        return redirect(url_for('main_bp.closed'))
+
     # Logout user if it's login
     if current_user.is_authenticated:
         logout_user()
@@ -170,6 +179,9 @@ def register(token):
 
 @auth_bp.route("/reset/<token>", methods=["GET", "POST"])
 def reset(token):
+    if not params_manager.enable_app:
+        return redirect(url_for('main_bp.closed'))
+
     # Logout user if it's login
     if current_user.is_authenticated:
         logout_user()
@@ -202,6 +214,9 @@ def reset(token):
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
+    if not params_manager.enable_app:
+        return redirect(url_for('main_bp.closed'))
+
     # Bypass if user is logged in
     if current_user.is_authenticated:
         return redirect(url_for("main_bp.init"))

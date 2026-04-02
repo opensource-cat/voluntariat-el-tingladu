@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user
-from . import task_manager
+from . import task_manager, params_manager
 from .forms_message import IncidenceForm
 from .helper import flash_info, labels, require_login
 from .plugin_gmail import TaskIncidenceEmail
@@ -12,10 +12,13 @@ main_bp = Blueprint(
 
 @main_bp.route("/", methods=["GET"])
 def init():
+    if not params_manager.enable_app:
+        return redirect(url_for('main_bp.closed'))
+    
     if current_user.is_authenticated:
         return redirect(url_for('volunteer_bp.dashboard'))    
     else:
-        return redirect(url_for("auth_bp.login"))
+        return redirect(url_for("auth_bp.login"))        
 
 @main_bp.route('/incidence', methods=["GET", "POST"])
 @require_login()
@@ -41,7 +44,16 @@ def incidence():
 
 @main_bp.route('/contact')
 def contact():
+    if not params_manager.enable_app:
+        return redirect(url_for('main_bp.closed'))
+    
     if current_user.is_authenticated:
         return redirect(url_for("main_bp.incidence"))
     else:
         return render_template('unregistered-contact.html')
+
+@main_bp.route('/closed')
+def closed():
+    if params_manager.enable_app:
+        return redirect(url_for('main_bp.init'))
+    return render_template('unregistered-closed.html')

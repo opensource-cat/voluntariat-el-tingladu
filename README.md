@@ -23,64 +23,11 @@ deactivate
 
 ## Database
 
-PostgreSQL is the database of the application. To run it you need `docker compose` installed:
+PostgreSQL is the database of the application. Create a database using the script [reset_test_database.bash](./postgres/reset_test_database.bash) after adapting it to your environment.
 
-```bash
-apt-get install docker-compose-plugin
-```
+## Run the Application in Development
 
-To run the database execute:
-
-```bash
-docker compose up
-```
-
-To open a psql console, run:
-
-```
-docker exec -it voluntariat-el-tingladu-postgres-1 psql -U postgres
-```
-
-To create file `0_squema.sql` with all the tables:
-
-```
-docker exec -it voluntariat-el-tingladu-postgres-1 pg_dump -U postgres -s > 0_schema.sql
-```
-
-To create file `dump.sql` with all the tables and the data:
-```
-docker exec -it voluntariat-el-tingladu-postgres-1 pg_dump -U postgres --column-inserts > dump.sql
-```
-
-To reset the database, stop it, and start agin after removing the volume:
-
-```
-docker volume rm voluntariat-el-tingladu_postgres_volume
-
-```
-
-## CSS and Javascript
-
-The original CSS and JS files can be found here:
-
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-```
-
-## Demo users
-
-Check the file [1_users_demo.sql](./postgres/1_users_demo.sql). Password of both users is **demo**.
-
-## Launch the application in Development
-
-First launch the database:
-
-```
-docker compose up
-```
+First create a `.env` file using the `.env.template` as model.
 
 Then run the flask app:
 
@@ -88,31 +35,11 @@ Then run the flask app:
 flask run --debug
 ```
 
-Open a browser to `http://127.0.0.1:8080/`
+Check the file [1_users_demo.sql](./postgres/1_users_demo.sql). Password of all demo users is **patata**. We take security very seriously.
 
-## Launch the application in Developement
+## Run the Application in Production
 
-The application is launched with HTTP:
+The application can be run with `gunicorn`:
 
-```
-docker compose -f docker-compose-developement.yml up
-```
+    gunicorn -w 4 -b 127.0.0.1:8080 'voluntariat_app:create_app()'
 
-Open a browser to the port `80` of the test server.
-
-
-## Launch the application in Production
-
-Run script [certbot.sh](./nginx/certbot.sh) to obtain or renew a certificate for the domain(s):
-
-```
-bash ./nginx/certbot.sh certonly
-```
-
-Launch the application with HTTPS:
-
-```
-docker compose -f docker-compose-production.yml up
-```
-
-Open a browser to the port `443` of the production server.
