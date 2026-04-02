@@ -43,3 +43,4 @@ The application can be run with `gunicorn`:
 
     gunicorn -w 4 -b 127.0.0.1:8080 'voluntariat_app:create_app()'
 
+Inside the [production folder](./production/) there are the nginx site config file and the systemd service file used in production.
