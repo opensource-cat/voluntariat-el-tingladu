@@ -10,7 +10,6 @@ class ProfileForm(FlaskForm):
     purchased_ticket1 = StringField(filters = [trim])
     purchased_ticket2 = StringField(filters = [trim])
     purchased_ticket3 = StringField(filters = [trim])
-    electrician = BooleanField()
     submit = SubmitField()
 
 class ChangePasswordForm(FlaskForm):

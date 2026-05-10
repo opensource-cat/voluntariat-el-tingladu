@@ -34,7 +34,6 @@ class User(UserMixin, db.Model):
     purchased_ticket1 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     purchased_ticket2 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     purchased_ticket3 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
-    electrician = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     barres_informative_meeting = db.Column(db.String, nullable=False, server_default='')
     entrades_informative_meeting = db.Column(db.String, nullable=False, server_default='')
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
@@ -82,13 +81,19 @@ class Task(db.Model):
     __tablename__ = "tasks"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
+    categories = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     password = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
-    only_workers = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
 
     @hybrid_property
     def hashid(self):
         return hashid_manager.get_task_hashid(self.id)
+    
+    def get_categories_list(self):
+        if self.categories:
+            return [category.strip() for category in self.categories.split("|")]
+        else:
+            return []
 
 class Shift(db.Model):
     __tablename__ = "shifts"

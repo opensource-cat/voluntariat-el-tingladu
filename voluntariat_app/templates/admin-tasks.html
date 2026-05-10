@@ -20,7 +20,6 @@
                             <th>NOM</th>
                             <th>DESCRIPCIÓ</th>
                             <th>CONTRASENYA</th>
-                            <th>SOLS PROFESSIONALS</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,11 +27,7 @@
                         <tr>
                             <td><a href='/admin/tasks/{{t.id}}'>{{t.name}}</a></td>
                             <td><a href='/admin/tasks/{{t.id}}'>{{t.description}}</a></td>
-                            <td> {% if t.only_workers %} - {% else %} 
-                                <input type='text' name='password-{{t.id}}' value='{{t.password}}' placeholder="/sense contrasenya/"/>
-                                {% endif %}
-                            </td>
-                            <td><a href='/admin/tasks/{{t.id}}'>{{"X" if t.only_workers}}</a></td>
+                            <td><input type='text' name='password-{{t.id}}' value='{{t.password}}' placeholder="/sense contrasenya/"/></td>
                         </tr>
                         {% endfor %}
                     </tbody>

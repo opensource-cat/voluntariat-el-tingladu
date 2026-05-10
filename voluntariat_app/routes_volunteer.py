@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
-from .helper import require_login, require_view, is_read_only
+from .helper import require_login, require_view, is_read_only, logger
 from . import db, task_manager, rewards_manager, hashid_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm, InformativeMeetingForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
@@ -116,27 +116,16 @@ def tasks(volunteer_hashid):
         on s.id = u.shift_id group by s.task_id
     """).columns(task_id=db.Integer,n_shifts=db.Integer).subquery("count_subquery")
 
-    if current_user.is_admin:
-        tasks_and_number_of_shifts = db.session.query(
-            Task, count_subquery.c.n_shifts
-        ).join(
-            count_subquery, Task.id == count_subquery.c.task_id
-        ).order_by(
-            Task.id.asc()
-        )
-    else:
-        # si no es admin, sols veus les tasques de voluntari
-        tasks_and_number_of_shifts = db.session.query(
-            Task, count_subquery.c.n_shifts
-        ).join(
-            count_subquery, Task.id == count_subquery.c.task_id
-        ).filter(
-            Task.only_workers == False
-        ).order_by(
-            Task.id.asc()
-        )
-
-        #FIXME a mes, si no s'ha apuntat a cap tasca, no pot fer muntatge
+    tasks_and_number_of_shifts = db.session.query(
+        Task, count_subquery.c.n_shifts
+    ).join(
+        count_subquery, Task.id == count_subquery.c.task_id
+    ).order_by(
+        Task.id.asc()
+    )
+    
+    if not current_user.is_admin:
+        #FIXME si no s'ha apuntat a cap tasca, no pot fer muntatge
         if not volunteer.has_shifts:
             tasks_and_number_of_shifts = [(t,n) for (t,n) in tasks_and_number_of_shifts if t.name != 'MUNTATGE']
 
@@ -587,7 +576,13 @@ def rewards(volunteer_hashid):
                     ut.ticket_id = new_ticket_id
                     db.session.add(ut)
 
+        # actualitzo tickets, àpats i acreditacions
+        rewards_manager.update_rewards(
+            user = volunteer
+        )
+        
         db.session.commit()
+
         flash_info("data_saved")
         return redirect(request.full_path) # redirecció a mi mateix
     else:

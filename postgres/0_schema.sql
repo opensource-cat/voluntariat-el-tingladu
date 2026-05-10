@@ -143,9 +143,9 @@ ALTER SEQUENCE public.shifts_id_seq OWNED BY public.shifts.id;
 CREATE TABLE public.tasks (
     id integer NOT NULL,
     name character varying NOT NULL,
+    categories character varying DEFAULT ''::character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL,
-    password character varying DEFAULT ''::character varying NOT NULL,
-    only_workers boolean DEFAULT false NOT NULL
+    password character varying DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -294,7 +294,6 @@ CREATE TABLE public.users (
     purchased_ticket1 character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket2 character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket3 character varying DEFAULT ''::character varying NOT NULL,
-    electrician boolean DEFAULT false NOT NULL,
     confirmed boolean DEFAULT true NOT NULL,
     -- TODO: set these fields in a meetings table
     barres_informative_meeting character varying DEFAULT ''::character varying NOT NULL,

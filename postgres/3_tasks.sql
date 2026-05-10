@@ -1,1 +1,1 @@
-\copy tasks(name, description, password, only_workers) from './csv/tasks.csv' delimiter ',' csv header;
+\copy tasks(name, categories, description, password) from './csv/tasks.csv' delimiter ',' csv header;

@@ -44,7 +44,6 @@ def people():
             select surname as cognoms, name as nom,
             email as email, dni as dni,
             phone as mòbil, role as rol, 
-            case when electrician then 'X' else '' end as electricitat,
             barres_informative_meeting as "reunió inf. barres",
             entrades_informative_meeting as "reunió inf. entrades",
             purchased_ticket1 as "entrada adquirida 1",

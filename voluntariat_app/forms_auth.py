@@ -21,6 +21,12 @@ class SignUpForm(FlaskForm):
         ], 
         filters = [trim]
     )
+    confirm = StringField(
+        validators=[
+            DataRequired(),
+            EqualTo("dni"),
+        ],
+    )
     adult = BooleanField(
         validators=[DataRequired()]
     )
@@ -39,7 +45,6 @@ class RegisterForm(FlaskForm):
     name = StringField(validators=[DataRequired()], filters = [trim])
     surname = StringField(validators=[DataRequired()], filters = [trim])
     phone = StringField(filters = [trim])
-    electrician = BooleanField()
 
     contract = BooleanField(
         validators=[DataRequired()]
