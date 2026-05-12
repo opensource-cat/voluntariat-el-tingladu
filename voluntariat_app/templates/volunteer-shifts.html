@@ -65,7 +65,7 @@
           <h4>{{task.name}} {% if task.password != '' %} <span class="badge badge-warning">Accés restringit</span>{% endif %}</h4>
           <h4><small>{{ task.description }}</small></h4>
         </div>
-        {% for shift,taked,selected,comments,assignations,shift_assignations in shifts_and_selected %}
+        {% for shift,taked,selected,task_category,comments,assignations,shift_assignations in shifts_and_selected %}
           {% set disponibles = (shift.slots - taked) if shift.slots > 0 else 1 %}
           {% set no_accessible = disponibles <= 0 and not selected and not user.is_admin %}
         <div class="list-group-item {{'list-group-item-light' if no_accessible }}">
@@ -93,6 +93,21 @@
                 {% endif %}
               </h5>
               <div class="form-group hidden-texarea">
+                {% if task.get_categories_list() %}
+                <div class="text-right font-italic" >
+                  <label for="task-category-{{shift.id}}">Selecciona una categoria (obligatori)</label>
+                  <select class="form-control form-control-sm" id="task-category-{{shift.id}}" 
+                    name="task-category-{{shift.id}}" {{'disabled' if read_only}}>
+                    <option value=""></option>
+                    {% for category in task.get_categories_list() %}
+                      <option value="{{category}}" {{'selected' if category == task_category}}>{{category}}</option>
+                    {% endfor %}
+                  </select>
+                  <br />
+                </div>
+                {% else %}
+                  <input type="hidden" name="task-category-{{shift.id}}" value="" >
+                {% endif %}
                 <div class="text-right font-italic" >
                   <label for="user-comments-{{shift.id}}">
                     Indica, si escau, amb quines persones properes t'agradaria compartir torn o altres observacions
@@ -113,7 +128,6 @@
 
             </div>
           </label>
-
         </div>
         {% endfor %}
       </div>

@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user
+from wtforms import form
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
 from .helper import require_login, require_view, is_read_only, logger
 from . import db, task_manager, rewards_manager, hashid_manager
@@ -288,7 +289,7 @@ def shifts(volunteer_hashid, task_hashid):
         else:
             __update_shifts(
                 volunteer = volunteer,
-                task_id = task_id,
+                task = task,
                 day = day,
                 current_user_is_admin = current_user.is_admin,
                 form = request.form
@@ -323,21 +324,29 @@ def shifts(volunteer_hashid, task_hashid):
             user=current_user
         )
 
-def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
+def __update_shifts(volunteer, task, day, current_user_is_admin, form):
     current_user_shifts = UserShift.query.filter(UserShift.user_id == volunteer.id).filter(
-        text(f"""shift_id in (select id from shifts where task_id = {task_id} and day = '{day}')""")
+        text(f"""shift_id in (select id from shifts where task_id = {task.id} and day = '{day}')""")
     ).all()
 
     shift_id_to_insert = set((int(id) for id in form.getlist("shifts")))
 
     for user_shift in current_user_shifts:
         if user_shift.shift_id in shift_id_to_insert:
-            comments = trim(form.get(f"user-comments-{user_shift.shift_id}"))
-            user_shift.comments = comments
-            db.session.add(user_shift)
+            task_category = trim(form.get(f"task-category-{user_shift.shift_id}"))
+            if task.get_categories_list() and task_category not in task.get_categories_list():
+                # l'esborro perquè ha posat una categoria no vàlida
+                db.session.delete(user_shift)
+            else:
+                user_shift.task_category = task_category
 
-            # aquest no cal inserirlo
-            shift_id_to_insert.remove(user_shift.shift_id)
+                comments = trim(form.get(f"user-comments-{user_shift.shift_id}"))
+                user_shift.comments = comments
+                
+                db.session.add(user_shift)
+
+                # aquest no cal inserirlo
+                shift_id_to_insert.remove(user_shift.shift_id)
         else:
             # l'esborrem
             db.session.delete(user_shift)
@@ -360,13 +369,19 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
             allow_user_shift = shift.slots > taked
 
         if allow_user_shift:
+            task_category = trim(form.get(f"task-category-{shift_id}"))
+            if task.get_categories_list() and task_category not in task.get_categories_list():
+                flash_warning("not_all_shifts")
+                continue
+
             comments = trim(form.get(f"user-comments-{shift_id}"))
             shift_assignations = [False for _ in shift.assignations]
             user_shift = UserShift(
                 user_id = volunteer.id,
                 shift_id = int(shift_id),
                 shift_assignations = shift_assignations,
-                comments = comments
+                comments = comments,
+                task_category = task_category
             )
             db.session.add(user_shift)
         else:
@@ -454,17 +469,17 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
 def __select_shifts_and_selected(volunteer_id, task_id, day):
     # subquery que calcula, donat un usuari i una tasca, si ha seleccionat el torn (t/f) i les possibles observacions que ha posat
     selected_shifts_subquery = text(f"""
-        select s.id as shift_id, COALESCE(c.taked,0) as taked, user_id is not null as selected, u.comments as comments, s.assignations as assignations, u.shift_assignations as shift_assignations 
+        select s.id as shift_id, COALESCE(c.taked,0) as taked, user_id is not null as selected,u.task_category as task_category, u.comments as comments, s.assignations as assignations, u.shift_assignations as shift_assignations 
         from shifts as s left join 
-            (select shift_id, user_id, comments, shift_assignations from user_shifts where user_id = {volunteer_id}) as u 
+            (select shift_id, user_id, task_category, comments, shift_assignations from user_shifts where user_id = {volunteer_id}) as u 
         on s.id = u.shift_id left join 
             (select shift_id, count(*) as taked from user_shifts group by shift_id) as c 
         on s.id = c.shift_id
         where s.task_id = {task_id} and s.day = '{day}'
-    """).columns(shift_id=db.Integer,taked=db.Integer,selected=db.Boolean, comments=db.String, assignations=ARRAY(db.String), shift_assignations=ARRAY(db.Boolean)).subquery("selected_shifts_subquery")
+    """).columns(shift_id=db.Integer,taked=db.Integer,selected=db.Boolean, task_category=db.String, comments=db.String, assignations=ARRAY(db.String), shift_assignations=ARRAY(db.Boolean)).subquery("selected_shifts_subquery")
 
     return db.session.query(
-        Shift, selected_shifts_subquery.c.taked, selected_shifts_subquery.c.selected, selected_shifts_subquery.c.comments, selected_shifts_subquery.c.assignations, selected_shifts_subquery.c.shift_assignations
+        Shift, selected_shifts_subquery.c.taked, selected_shifts_subquery.c.selected, selected_shifts_subquery.c.task_category, selected_shifts_subquery.c.comments, selected_shifts_subquery.c.assignations, selected_shifts_subquery.c.shift_assignations
     ).join(
         selected_shifts_subquery, Shift.id == selected_shifts_subquery.c.shift_id
     ).order_by(

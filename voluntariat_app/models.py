@@ -20,6 +20,7 @@ class UserShift(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), primary_key=True)
     shift_assignations = db.Column(ARRAY(db.Boolean), nullable=False, default=[])
+    task_category = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class User(UserMixin, db.Model):

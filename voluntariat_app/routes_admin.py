@@ -88,7 +88,7 @@ def add_worker():
             name = form.name.data,
             surname = form.surname.data,
             phone = form.phone.data,
-            shifts_id = [int(shift) for shift in form.shifts.data]
+            shifts = [shift for shift in form.shifts.data]
         )
 
         flash_info("worker_created")
@@ -105,7 +105,7 @@ def add_some_workers():
     if form.validate_on_submit():
         n = form.number.data
         prefix = form.prefix.data
-        shifts_id = [int(shift) for shift in form.shifts.data]
+        shifts = [shift for shift in form.shifts.data]
 
         for i in range(1,n+1):
             __insert_worker(
@@ -114,7 +114,7 @@ def add_some_workers():
                 name = "",
                 surname = f"{prefix} {i:02d}",
                 phone = "",
-                shifts_id = shifts_id
+                shifts = shifts
             )
 
         flash_info("some_workers_created")
@@ -122,7 +122,7 @@ def add_some_workers():
 
     return render_template('admin-add-some-workers.html',form=form,user=current_user)
 
-def __insert_worker(n, admin_id, surname, name, phone, shifts_id):
+def __insert_worker(n, admin_id, surname, name, phone, shifts):
     worker_token = f"{hashid_manager.create_token(admin_id)}#{n}#{admin_id}"
     worker = User(
         name = name,
@@ -142,7 +142,14 @@ def __insert_worker(n, admin_id, surname, name, phone, shifts_id):
 
     logger.info(f"Afegit treballador {worker.full_name} ")
 
-    for shift_id in shifts_id:
+    for shift in shifts:
+        if ":" in shift:
+            shift_id, task_category = shift.split(":")
+            shift_id = int(shift_id)
+        else:
+            shift_id = int(shift)
+            task_category = ""
+
         # assigno automàticament aquest treballador a aquest torn
         shift = Shift.query.filter_by(id = shift_id).first()
         shift_assignations = [False for _ in shift.assignations]
@@ -150,6 +157,7 @@ def __insert_worker(n, admin_id, surname, name, phone, shifts_id):
             user_id = worker.id,
             shift_id = shift_id,
             shift_assignations = shift_assignations,
+            task_category = task_category,
             comments = ""
         )
         db.session.add(user_shift)
@@ -168,13 +176,29 @@ def __insert_worker(n, admin_id, surname, name, phone, shifts_id):
     return worker
 
 def get_list_shifts():
-    db_shifts = [(id, t + ": " + s1 + ", " + s2) for (id, t, s1, s2) in 
-        db.session.execute(text(f"""select s.id, t.name, s.day, s.description
-            from tasks as t
-            join shifts as s on t.id = s.task_id 
-            order by t.id asc, s.id asc""")).all()
-    ]
-    return db_shifts
+    db_shifts = db.session.execute(text(f"""select s.id, t.name, t.categories, s.day, s.description
+        from tasks as t
+        join shifts as s on t.id = s.task_id 
+        order by t.id asc, s.id asc""")).all()
+    
+    shifts = []
+    for (id, task_name, string_categories, day, description) in db_shifts:
+        categories = []
+        if string_categories:
+            categories = [category.strip() for category in string_categories.split("|")]
+
+        if len(categories) == 0:
+            if day:
+                shifts.append((id, f"{task_name} - {day} - {description}"))
+            else:
+                shifts.append((id, f"{task_name} - {description}"))
+        else:
+            for category in categories:
+                if day:
+                    shifts.append((f"{id}:{category}", f"{task_name} - {category} - {day} - {description}"))
+                else:
+                    shifts.append((f"{id}:{category}", f"{task_name} - {category} - {description}"))
+    return sorted(shifts, key=lambda x: x[1]) 
 
 @admin_bp.route("/admin/worker/<worker_hashid>", methods=["GET", "POST"])
 @require_admin()
@@ -246,7 +270,7 @@ def tasks():
 def shifts(task_id):
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select t.name as tasca, s.day as dia, s.description as descripció,
+        select = """select t.name as tasca, us.task_category as categoria, s.day as dia, s.description as descripció,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil, us.comments as "obs torn"
@@ -323,7 +347,7 @@ def shift_detail(task_id, shift_id):
         for (i, name) in enumerate(shift.assignations, start=1):
             assignations_select.write(f""",case when us.shift_assignations[{i}] then 'X' else '' end as "{name}"\n""")
 
-        select = f"""select t.name as tasca, s.day as dia, s.description as descripció,
+        select = f"""select t.name as tasca, us.task_category as categoria, s.day as dia, s.description as descripció,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil, us.comments as "obs torn"

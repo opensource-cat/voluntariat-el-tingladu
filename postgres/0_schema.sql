@@ -260,6 +260,7 @@ CREATE TABLE public.user_shifts (
     user_id integer NOT NULL,
     shift_id integer NOT NULL,
     shift_assignations boolean[] NOT NULL,
+    task_category character varying DEFAULT ''::character varying NOT NULL,
     comments character varying DEFAULT ''::character varying NOT NULL
 );
 

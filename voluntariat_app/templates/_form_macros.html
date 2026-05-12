@@ -51,10 +51,10 @@
 </div>
 {% endmacro %}
 
-{% macro select(field, name, description=None) %}
+{% macro select(field, name, description=None, size=4) %}
 <div class="form-group">
   {{ field.label(name) }}
-  {{ field(class='form-control') }}
+  {{ field(class='form-control', size=size) }}
   {% for error in field.errors %}
   <p class="form-error">{{ error }}</p>
   {% endfor %}
