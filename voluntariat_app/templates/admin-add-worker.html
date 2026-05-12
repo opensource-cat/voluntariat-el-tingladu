@@ -18,7 +18,7 @@
         {{ text(form.surname, "Cognoms", placeholder="Cognoms de la nova persona treballadora", description="El llistat de persones s'ordena pels cognoms") }}
         {{ text(form.name, "Nom", placeholder="Nom de la nova persona treballadora (opcional)") }}
         {{ text(form.phone, "Mòbil", placeholder="Mòbil (opcional)") }}
-        {{ select(form.shifts, "Torn preassignat", description="Assigna directament la nova persona treballadora a aquest torn") }}
+        {{ select(form.shifts, "Torn preassignat", description="Assigna directament la nova persona treballadora a aquests torns") }}
         <div class="btn-group">
           <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrere</a>
           {{ form.submit(value="Dona d'alta", class='btn btn-success') }}

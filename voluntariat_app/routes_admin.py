@@ -88,7 +88,7 @@ def add_worker():
             name = form.name.data,
             surname = form.surname.data,
             phone = form.phone.data,
-            shift_id = int(form.shifts.data)
+            shifts_id = [int(shift) for shift in form.shifts.data]
         )
 
         flash_info("worker_created")
@@ -105,7 +105,7 @@ def add_some_workers():
     if form.validate_on_submit():
         n = form.number.data
         prefix = form.prefix.data
-        shift_id = int(form.shifts.data)
+        shifts_id = [int(shift) for shift in form.shifts.data]
 
         for i in range(1,n+1):
             __insert_worker(
@@ -114,7 +114,7 @@ def add_some_workers():
                 name = "",
                 surname = f"{prefix} {i:02d}",
                 phone = "",
-                shift_id = shift_id
+                shifts_id = shifts_id
             )
 
         flash_info("some_workers_created")
@@ -122,7 +122,7 @@ def add_some_workers():
 
     return render_template('admin-add-some-workers.html',form=form,user=current_user)
 
-def __insert_worker(n, admin_id, surname, name, phone, shift_id):
+def __insert_worker(n, admin_id, surname, name, phone, shifts_id):
     worker_token = f"{hashid_manager.create_token(admin_id)}#{n}#{admin_id}"
     worker = User(
         name = name,
@@ -133,7 +133,7 @@ def __insert_worker(n, admin_id, surname, name, phone, shift_id):
         role = UserRole.worker
     )
     # random password pq no pot ser buit
-    worker.set_password(worker_token + hashid_manager.create_password())
+    worker.set_password(worker_token)
 
     logger.info(f"Nou treballador: {worker.full_name}")
 
@@ -142,7 +142,7 @@ def __insert_worker(n, admin_id, surname, name, phone, shift_id):
 
     logger.info(f"Afegit treballador {worker.full_name} ")
 
-    if shift_id > 0:
+    for shift_id in shifts_id:
         # assigno automàticament aquest treballador a aquest torn
         shift = Shift.query.filter_by(id = shift_id).first()
         shift_assignations = [False for _ in shift.assignations]
@@ -168,14 +168,13 @@ def __insert_worker(n, admin_id, surname, name, phone, shift_id):
     return worker
 
 def get_list_shifts():
-    no_shifts = [(0, labels.get("worker_without_shifts"))]
     db_shifts = [(id, t + ": " + s1 + ", " + s2) for (id, t, s1, s2) in 
         db.session.execute(text(f"""select s.id, t.name, s.day, s.description
             from tasks as t
             join shifts as s on t.id = s.task_id 
             order by t.id asc, s.id asc""")).all()
     ]
-    return no_shifts + db_shifts
+    return db_shifts
 
 @admin_bp.route("/admin/worker/<worker_hashid>", methods=["GET", "POST"])
 @require_admin()
