@@ -410,14 +410,14 @@ def __update_shifts(volunteer, task, day, current_user_is_admin, form):
             # esborro les possibles tasques de barres que té
             db.session.execute(text(f"""delete from user_shifts as us
                 using shifts as s
-                where us.shift_id = s.id and s.task_id = (select id from tasks where name = 'BARRES') 
+                where us.shift_id = s.id and s.task_id = (select id from tasks where name LIKE 'BARRES%') 
                 and us.user_id = {volunteer.id}"""))
             
         #FIXME: Si ha triat barres, no pot fer entrades
         num_barres = db.session.execute(text(f"""select count(*) from user_shifts as us 
             join shifts as s on us.shift_id = s.id
             join tasks as t on s.task_id = t.id
-            where us.user_id = {volunteer.id} and t.name = 'BARRES'""")).scalar()
+            where us.user_id = {volunteer.id} and t.name LIKE 'BARRES%'""")).scalar()
         if num_barres > 0:
             # esborro les possibles tasques d'entrades que té
             db.session.execute(text(f"""delete from user_shifts as us
@@ -429,7 +429,7 @@ def __update_shifts(volunteer, task, day, current_user_is_admin, form):
     tasques_barra = db.session.execute(text(f"""select count(*) from user_shifts as us 
             join shifts as s on us.shift_id = s.id
             join tasks as t on s.task_id = t.id
-            where us.user_id = {volunteer.id} and (t.name = 'BARRES' or t.name = 'BARRES PRIMER TORN')""")).scalar()
+            where us.user_id = {volunteer.id} and (t.name LIKE 'BARRES%')""")).scalar()
     if tasques_barra > 0:
         if volunteer.barres_informative_meeting == "":
             # li assignem una reunió informativa a l'atzar

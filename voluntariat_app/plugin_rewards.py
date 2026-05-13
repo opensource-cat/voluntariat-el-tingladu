@@ -48,7 +48,8 @@ class Rewards18Edition(RewardsImpl):
             # tasques
             entrades_id = self._get_task_id(db, "ENTRADES")
             barres_id = self._get_task_id(db, "BARRES")
-            barres_primer_torn_id = self._get_task_id(db, "BARRES PRIMER TORN")
+            barres_restringit_id = self._get_task_id(db, "BARRES RESTRINGIT")
+            barres_collectiu_torn_id = self._get_task_id(db, "BARRES COL·LECTIU")
             subcaps_barres_id = self._get_task_id(db, "SUBCAPS DE BARRES")
             marxandatge_id = self._get_task_id(db, "MARXANDATGE")
             photocall_id = self._get_task_id(db, "PHOTOCALL")
@@ -78,16 +79,17 @@ class Rewards18Edition(RewardsImpl):
             self.assignacio_apats = {
                 entrades_id: sopar_del_dia_que_ajuden,
                 barres_id: sopar_del_dia_que_ajuden,
-                barres_primer_torn_id: sopar_del_dia_que_ajuden,
+                barres_restringit_id: sopar_del_dia_que_ajuden,
+                barres_collectiu_torn_id: sopar_del_dia_que_ajuden,
                 subcaps_barres_id: sopar_del_dia_que_ajuden,
                 marxandatge_id: sopar_del_dia_que_ajuden,
                 photocall_id: sopar_del_dia_que_ajuden,
                 suport_collectius_id: sopar_del_dia_que_ajuden,
                 muntatge_id: [],
-                cuina_id: tots_els_sopars,
-                globus_id: tots_els_sopars,
-                tresoreria_id: tots_els_sopars,
-                comunicacio_id: tots_els_sopars,
+                cuina_id: sopar_del_dia_que_ajuden,
+                globus_id: sopar_del_dia_que_ajuden,
+                tresoreria_id: sopar_del_dia_que_ajuden,
+                comunicacio_id: sopar_del_dia_que_ajuden,
                 collaboracio_id: tots_els_sopars,
                 organitzacio_id: tots_els_sopars,
                 professional_id: tots_els_sopars,
@@ -118,7 +120,8 @@ class Rewards18Edition(RewardsImpl):
             self.assignacio_tickets = {
                 entrades_id: entrada_i_voluntariat_del_dia_que_ajuden,
                 barres_id: entrada_i_voluntariat_del_dia_que_ajuden,
-                barres_primer_torn_id: entrada_i_voluntariat_del_dia_que_ajuden,
+                barres_restringit_id: entrada_i_voluntariat_del_dia_que_ajuden,
+                barres_collectiu_torn_id: entrada_i_voluntariat_del_dia_que_ajuden,
                 subcaps_barres_id: entrada_i_voluntariat_del_dia_que_ajuden,
                 marxandatge_id: entrada_i_voluntariat_del_dia_que_ajuden,
                 photocall_id: entrada_i_voluntariat_del_dia_que_ajuden,
