@@ -1,13 +1,13 @@
 nom,categories,descripció,contrasenya
 ENTRADES,"",Voluntariat d'entrades,""
 BARRES RESTRINGIT,"",Voluntariat restringit de barres,password0
-BARRES COL·LECTIU,"Centre Obert|Atra|Refugi Kakua|Corresponsals",Voluntariat de col·lectius en barres de 1r torn,password1
+BARRES COL·LECTIU,"",Voluntariat del Refugi Kakuaa en barres de 1r torn,password1
 BARRES,"",Voluntariat de barres,""
 MUNTATGE,"",Voluntariat de muntatge,""
 SUBCAPS DE BARRES,"",Supcaps de barres,password2
 MARXANDATGE,"",Voluntariat de marxandatge,password3
 PHOTOCALL,"",Voluntariat del photocall,password4
-SUPORT COL·LECTIUS,"Centre Obert|Atra|Refugi Kakua|Corresponsals",Tasques de suport de col·lectius,password5
+SUPORT COL·LECTIUS,"Centre Obert|Joves Atra|Corresponsals|Fundació Abad",Tasques de suport de col·lectius,password5
 CUINA,"",Voluntariat de cuina,password6
 GLOBUS,"",Voluntariat de Globus,password7
 TRESORERIA,"",Voluntariat de tresoreria,password8
