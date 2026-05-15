@@ -250,7 +250,8 @@ class Rewards18Edition(RewardsImpl):
                 if meal_id not in meals_assigned:
                     meal = UserMeal(
                         user_id = user.id,
-                        meal_id = meal_id
+                        meal_id = meal_id,
+                        selected = True
                     )
                     meals_assigned[meal_id] = meal 
 
